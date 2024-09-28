@@ -130,9 +130,9 @@ It can be encoded in a QRCode as an URL and shared or sent in mails or messages.
 # implementation
 
 The format is very simple to parse, as it is separator based with a limited number of tokens and states.
-A sample inplementation is given in Javascript with a decoding and comparison tool.
+A sample implementation is given in Javascript with a decoding tool.
 
-The only difficulty is dealing with single **LOCATION** tokens, in the sample implenation there is a description of the number of mosaics per city, it is only needed to resolve single location tokens.
+The only difficulty is dealing with single **LOCATION** tokens, in the sample implementation there is a description of the number of mosaics per city, it is only needed to resolve single location tokens and make a general cas of LIL_00 by introducing a start attribute
 
 The other only ;-) difficulty is dealing with LIL starting number.
 To get rid of these issues, just do not use single location tokens.
