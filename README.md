@@ -23,7 +23,7 @@ Example : ```NY_100``` ```PA_27``` ```PA_1500```, ```SPACE_02```
 The format is text based and consists of a list of token, separated by spaces or newlines.
 There can be comments starting from position 0 in a line or within a line provided all tokens in the line are valid.
 Comments start with a ```#```  and the line content after does not contribute to tokens 
-Tokens are case-insensistive but it is recommended to use capitals
+Tokens are case sensistive.
 Each token describes one or many item.
 
 Example:
@@ -132,9 +132,14 @@ It can be encoded in a QRCode as an URL and shared or sent in mails or messages.
 The format is very simple to parse, as it is separator based with a limited number of tokens and states.
 A sample inplementation is given in Javascript with a decoding and comparison tool.
 
-Some sample files for flashed mosaics from the Invader uiverse are provided.
+The only difficulty is dealing with single **LOCATION** tokens, in the sample implenation there is a description of the number of mosaics per city, it is only needed to resolve single location tokens.
 
+The other only ;-) difficulty is dealing with LIL starting number.
+To get rid of these issues, just do not use single location tokens.
 
+A sample file for flashed mosaics from the Invader universe is provided in flashfile (1244 bytes)
+and flat (16943 bytes)
+This describes 2348  mosaics in 46 cities and is the flaslist of one of the top 250 players
 
 
 

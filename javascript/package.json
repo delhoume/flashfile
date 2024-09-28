@@ -1,0 +1,7 @@
+{
+  "name": "flashfile",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "sample flashfile implementation",
+  "author": "delhoume@gmail.com"
+}
