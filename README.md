@@ -86,8 +86,8 @@ The implicit mode decides if the item described must be added or removed from th
 Exemple:
 ```
 ROM_03         # add ROM_03 to the list, sets ROM as the implicit location and ADD implicit mode
-19 27,29       # adds ROM_05 ROM_27 ROM_28 ROM_29 to the list
-DIJ            # adds DIJ_01 DIJ_02 DIJ_04 DIJ_05 DIJ_06
+19 27,29       # adds ROM_19 ROM_27 ROM_28 ROM_29 to the list
+DIJ            # adds DIJ_01 DIJ_02 DIJ_03 DIJ_04 DIJ_05 DIJ_06
 04             # removes DIJ_04
 ````
 
