@@ -90,6 +90,20 @@ ROM_03         # add ROM_03 to the list, sets ROM as the implicit location and A
 DIJ            # adds DIJ_01 DIJ_02 DIJ_03 DIJ_04 DIJ_05 DIJ_06
 04             # removes DIJ_04
 ````
+The same data with the standard explicit item list is
+```
+ROM_03
+ROM_19
+ROM_27
+ROM_28
+ROM_29
+DIJ_01
+DIJ_02
+DIJ_03
+DIJ_05
+DIJ_06
+```
+
 
 ### issue with implicit mode
 This mode allow for very short encoding of "all" items in a location but the concept of "all" 
