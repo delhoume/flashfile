@@ -23,7 +23,7 @@ Example : ```NY_100``` ```PA_27``` ```PA_1500```, ```SPACE_02```
 ## Format 
 The format is text based and consists of a list of token, separated by spaces or newlines.
 There can be comments starting from position 0 in a line or within a line provided all tokens in the line are valid.
-Comments start with a ```#```  and the line content after does not contribute to tokens 
+Comments start with a ```#```  and extend to th end of the current line. Comment contents does not contribute to tokens.
 Tokens are case sensistive.
 Each token describes one or many item.
 
