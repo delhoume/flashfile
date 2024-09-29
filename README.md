@@ -35,7 +35,7 @@ PA_1299 LA_18 # MARS_19 is not in the list
 ```
 
 ## LOCATION
-A text value, usually a single word that describe uniquelly the *location* part
+A text value, usually a single word or symbol that describes uniquely the *location* part
 
 Example: ```GRTI```
 
@@ -43,7 +43,10 @@ Example: ```GRTI```
 A value the describes a single *order* or a contiguous range of *orders* (lower and upper bounds are separated by a comma).
 The bounds are included in the range
 
-Exemple: ```12``` ```43,53```
+Exemple: 
+```12``` 
+
+```43,53``` the items with order from 43 to 53 included
 
 
 ## Tokens
@@ -118,9 +121,9 @@ If the number of items is likely to vary the use of **LOCATION** only tokens is 
 
 # application to FlashInvaders lists
 
-This format allows for very concise description of mosaic flashed in the world, because of the possibility
-to describe missing items from an otherwise complete list and series of contiguous order, with also the implicit
-mode saving lot of space.
+This format allows for very concise description of mosaics flashed in the world, because of the possibility
+to describe missing items from an otherwise complete location and series of contiguous order, with also the implicit
+mode saving lots of space.
 
 The compression ratio is vey high compared to a "flat" list of every item
 
@@ -133,6 +136,17 @@ re added to an already invaded location, this makes location only tokens not sui
 
 It happens that LIL (Lille) is the only invaded location in the world to have its order number start at 0 instead of 1.
 An application will need to take care of this to resolve correctly LIL as LIL_00,05
+
+- Order format is specific to Invader , order numbers < 10 have a  leading "0", as in NOO_01
+
+- FlashFiles describe a list with no linked date, it is up to the application using it to manage the date references as well the meaning for "all but" wrt the number of mosaïcs
+
+- It is possible to encode any value in the comments but it is left to the application to interpret them.  It may be part of a future version of this specification to define a standard for values in comments, in the form of
+```
+# Date=xxxxx
+# player=anonymous
+```
+    
 
 #  usage
 
