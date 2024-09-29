@@ -109,12 +109,11 @@ DIJ_06
 This mode allow for very short encoding of "all" items in a location but the concept of "all" 
 is a moving target, as the number of referenced items might increase.
 
-This means the token describes a situation at a moment in time and that the number of items in the location must be known at the time.i
+This means the token describes a situation at a moment in time and that the number of items in the location must be known at the time.
+If the number of items is likely to vary the use of **LOCATION** only tokens is discouraged.
 
-f the number of items is likely to vary the use of **LOCATION** only tokens is discouraged.
 
 # application to FlashInvaders lists
-
 
 This format allows for very concise description of mosaic flashed in the world, because of the possibility
 to describe missing items from an otherwise complete list and series of contiguous order, with also the implicit
