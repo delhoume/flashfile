@@ -16,6 +16,7 @@ The FlashFile format is a compact format to describe lists of items that can be 
 ## Items
 The format describes a list of items.
 Each item has a unique name in the LOCATION_ORDER format.
+
 Example : ```NY_100``` ```PA_27``` ```PA_1500```, ```SPACE_02```
 
 
@@ -35,11 +36,13 @@ PA_1299 LA_18 # MARS_19 is not in the list
 
 ## LOCATION
 A text value, usually a single word that describe uniquelly the *location* part
+
 Example: ```GRTI```
 
 ## ORDER
 A value the describes a single *order* or a contiguous range of *orders* (lower and upper bounds are separated by a comma).
 The bounds are included in the range
+
 Exemple: ```12``` ```43,53```
 
 
