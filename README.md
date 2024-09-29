@@ -103,7 +103,7 @@ DIJ_03
 DIJ_05
 DIJ_06
 ```
-
+(and this *flat* list is a valid FlashFile !
 
 ### issue with implicit mode
 This mode allow for very short encoding of "all" items in a location but the concept of "all" 
