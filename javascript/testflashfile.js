@@ -8,7 +8,7 @@ const main = () => {
     return;
   }
   let parser = new FlashFileParser();
-    let flashes = parser.flashes(fs.readFileSync(process.argv[2], "utf8"));
+    let flashes = parser.items(fs.readFileSync(process.argv[2], "utf8"));
     console.log(flashes.join("\n"));
 }
 

@@ -1,8 +1,7 @@
-import { Cities } from "./cities.js";
-
-
 class FlashFileParser {
-    constructor() {}
+    current_city_code;
+    current_list;
+    constructor() { }
 
     tokenize(contents) {
         let tokens = [];
@@ -22,66 +21,27 @@ class FlashFileParser {
         }
         return tokens;
     }
-    flashes(contents) {
+
+    items(contents) {
         let tokens = this.tokenize(contents);
         return this.decode(tokens);
     }
 
     decode(tokens) {
-        let flashes = [];
-        let city_code;
-        let manco_mode;
+        this.current_list = [];
         for (let c = 0; c < tokens.length; ++c) {
             let command = tokens[c];
-            if (command.indexOf("_") != -1) { // we have a city (always add)
+            if (command.indexOf("_") != -1) {
                 let parts = command.split("_");
-                city_code = parts[0];
-                manco_mode = false;
-                let range = parts[1];
-                let start, end;
-                if (range.indexOf(",") != -1) { // we have a range
-                    let bounds = range.split(",");
-                    start = Number(bounds[0]);
-                    end = Number(bounds[1]);
-                    for (let n = start; n <= end; ++n) {
-                        this.add(city_code + "_" + this.printInvaderNumber(n), flashes);
-                    }
-                } else {  /// single number
-                    this.add(city_code + "_" + this.printInvaderNumber(Number(range)), flashes)
-                }
-            } else { // can be a range or single number or city
-                if (command.indexOf(",") != -1) {
-                    let bounds = command.split(",");
-                    let start = Number(bounds[0]);
-                    let end = Number(bounds[1]);
-                    for (let n = start; n <= end; ++n) {
-                        let si_code = city_code + "_" + this.printInvaderNumber(n);
-                        if (manco_mode == true) {
-                            this.remove(si_code, flashes);
-                        } else {
-                            this.add(si_code, flashes);
-                        }
-                    }
-                } else if (command in Cities) { // single city, manco mode
-                    city_code = command;
-                    manco_mode = true;
-                    let invaders = Cities[city_code]['invaders'];
-                    let start = Cities[city_code]['start'];
-                    for (let c = 0; c < invaders; ++c) {
-                        this.add(city_code + "_" + this.printInvaderNumber(start + c), flashes);
-                    }
-                } else {
-                    let num = Number(command);
-                    let code = city_code + "_" + this.printInvaderNumber(num)
-                    if (manco_mode == true) {
-                        this.remove(code, flashes)
-                    } else {
-                        this.add(code, flashes)
-                    }
-                }
+                this.current_city_code = parts[0];
+                console.log(parts);
+                this.handleOrderToken(parts[1].trim());
+            } else {
+                this.handleOrderToken(command.trim());
             }
         }
-        return flashes;
+        return this.current_list;
+
     }
 
     printInvaderNumber(num) {
@@ -89,14 +49,33 @@ class FlashFileParser {
         else return num;
     }
 
-    add(si, flashes) {
-        if (!flashes.includes(si))
-            flashes.push(si);
+    handleOrderToken(order) {
+        if (order.length == 0) return;
+        let start, end;
+        if (order.indexOf(",") != -1) { // we have an absolut range
+            let bounds = order.split(",");
+            start = Number(bounds[0]);
+            end = Number(bounds[1]);
+            if (end >= start)
+                this.handleRelativeOrderRange(start, end - start + 1);
+            else
+                console.log("eerroro");
+        } else if (order.indexOf("+") != -1) {
+            let bounds = order.split("+");
+            start = Number(bounds[0]);
+            let len = Number(bounds[1]);
+            this.handleRelativeOrderRange(start, len + 1)
+        } else { /// single number
+            let num = Number(order)
+            console.log(num);
+            this.handleRelativeOrderRange(num, 1);
+        }
     }
-
-    remove(si, flashes) {
-        let idx = flashes.indexOf(si);
-        if (idx > -1) flashes.splice(idx, 1);
+    handleRelativeOrderRange(r1, len) {
+        for (let l = 0; l < len; ++l) {
+            let full_code = this.current_city_code + "_" + this.printInvaderNumber(r1 + l);
+            if (!this.current_list.includes(full_code)) this.current_list.push(full_code);
+        }
     }
 }
 
