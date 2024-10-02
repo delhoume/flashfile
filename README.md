@@ -41,41 +41,35 @@ Example: ```GRTI```
 
 ## ORDER
 A value the describes a single *order* or a contiguous range of *orders* (lower and upper bounds are separated by a comma).
-The bounds are included in the range
+The bounds are included in the range, ranges can be absolute or relative
 
 Exemple: 
 ```12``` 
 
 ```43,53``` the items with order from 43 to 53 included
+```23+3```the items with order from 23 to 26 included
 
 
 ## Tokens
 There are 2 types of tokens
 
 ### Tokens with **LOCATION** part
-They define the *location* part of the item
-the token is build using a **LOCATION**, and an optional **ORDER**.
-If present the *order* part is preceded by an underscore ```_```
+They define the *location* part of the item for all following tokens until set by another.
+the token is build using a **LOCATION**, and an **ORDER**. separated by an underscore ```_```
 
   - token with *order* part
     defines the *location* of the item and sets the **implicit location** to its location, and the **implicit mode*** to *add*
 example:
-```TK_28 HK_04,10```
-
-  - token with no *order* part
-   describes all items in a location, and sets the **implicit location** to its location and the **
-implicit mode** to *remove*.
-example:
-```DIJ # all items in DIJ``` 
+```TK_28 HK_04,10 KAT_10+3```
 
 ### Tokens with **ORDER** part
-They define the *order* part of the item
+They define the *order* part of the item for the **implicit location**.
 
 They can be part of a token with location or be a token on their own.
-If the token has no **LOCATION** part, the **implicit location** and  **implicit mode** are used to resolve
-the location and if the item is to be added or removed from the list
+If the token has no **LOCATION** part, the **implicit location** is used to resolve
+the location
 
-## implicit location and implicit mode
+## implicit location
 The implicit location decides what LOCATION an **ORDER** only token is attributed to.
 The implicit location is reset to itself by any of the explicit LOCATION tokens 
 exemple:
@@ -86,30 +80,13 @@ AMS_12
 18    # means # AMS_18
 ```
 
-The implicit mode decides if the item described must be added or removed from the 
-*implicit location*
-
 Exemple:
 ```
 ROM_03         # add ROM_03 to the list, sets ROM as the implicit location and ADD implicit mode
 19 27,29       # adds ROM_19 ROM_27 ROM_28 ROM_29 to the list
-DIJ            # adds DIJ_01 DIJ_02 DIJ_03 DIJ_04 DIJ_05 DIJ_06
-04             # removes DIJ_04
+DIJ_01+5            # adds DIJ_01 DIJ_02 DIJ_03 DIJ_04 DIJ_05 DIJ_06
 ````
-The same data with the standard explicit item list is
-```
-ROM_03
-ROM_19
-ROM_27
-ROM_28
-ROM_29
-DIJ_01
-DIJ_02
-DIJ_03
-DIJ_05
-DIJ_06
-```
-(and this *flat* list is a valid FlashFile !
+
 
 ### issue with implicit mode
 This mode allow for very short encoding of "all" items in a location but the concept of "all" 
@@ -121,25 +98,15 @@ If the number of items is likely to vary the use of **LOCATION** only tokens is 
 
 # application to FlashInvaders lists
 
-This format allows for very concise description of mosaics flashed in the world, because of the possibility
-to describe missing items from an otherwise complete location and series of contiguous order, with also the implicit
-mode saving lots of space.
+This format allows for very concise description of mosaics flashed in the world, 
 
 The compression ratio is vey high compared to a "flat" list of every item
 
 Paris is under constant *invasion* and the total number of referenced mosaics increases very often so the use of single PA token is not recommended at all.
-
-As the mosaics are in the street and are often destroyed or not flashable, these *all* token should be used with caution.
-
-Invader usually proceeds in "waves", when various (sometimes large) amounts of mosaics a
-re added to an already invaded location, this makes location only tokens not suitable for these.
-
 It happens that LIL (Lille) is the only invaded location in the world to have its order number start at 0 instead of 1.
 An application will need to take care of this to resolve correctly LIL as LIL_00,05
 
 - Order format is specific to Invader , order numbers < 10 have a  leading "0", as in NOO_01
-
-- FlashFiles describe a list with no linked date, it is up to the application using it to manage the date references as well the meaning for "all but" wrt the number of mosaïcs
 
 - It is possible to encode any value in the comments but it is left to the application to interpret them.  It may be part of a future version of this specification to define a standard for values in comments, in the form of
 ```
@@ -162,10 +129,6 @@ It can be encoded in a QRCode as an URL and shared or sent in mails or messages.
 The format is very simple to parse, as it is separator based with a limited number of tokens and states.
 A sample implementation is given in Javascript with a decoding tool.
 
-The only difficulty is dealing with single **LOCATION** tokens, in the sample implementation there is a description of the number of mosaics per city, it is only needed to resolve single location tokens and make a general cas of LIL_00 by introducing a start attribute
-
-The other only ;-) difficulty is dealing with LIL starting number.
-To get rid of these issues, just do not use single location tokens.
 
 A sample file for flashed mosaics from the Invader universe is provided in flashfile (1244 bytes)
 and flat (16943 bytes)
