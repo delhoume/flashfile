@@ -17,7 +17,9 @@ The FlashFile format is a compact format to describe lists of items that can be 
 The format describes a list of items.
 Each item has a unique name in the LOCATION_ORDER format.
 
-Example : ```NY_100``` ```PA_27``` ```PA_1500```, ```SPACE_02```
+Example : ```NY_100``` ```PA_27``` ```PA_1500``` ```SPACE_02```
+
+lists of lots ot items take lot of space, this format is dedicated to minimize it.
 
 
 ## Format 
