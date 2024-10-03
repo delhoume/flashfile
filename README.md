@@ -17,10 +17,16 @@ The FlashFile format is a compact format to describe lists of items that can be 
 The format describes a list of items.
 Each item has a unique name in the LOCATION_ORDER format.
 
-Example : ```NY_100``` ```PA_27``` ```PA_1500``` ```SPACE_02```
+Example : 
+```
+NY_100
+PA_27
+PA_1500
+SPACE_02
+```
 
-lists of lots ot items take lot of space, this format is dedicated to minimize it.
-
+In this specification we consider lists whose final description is a list of items.
+Using the complete descrition of an item takes a lot of space and there are opportunities to encode a list in a format that uses much less characters.
 
 ## Format 
 The format is text based and consists of a list of token, separated by spaces or newlines.
@@ -30,7 +36,6 @@ Tokens are case sensistive.
 Each token describes one or many item.
 
 Example:
-
 ```
 # this is valid
 PA_1299 LA_18 # MARS_19 is not in the list
@@ -48,35 +53,36 @@ GRTI
 A value the describes a single *order* or a contiguous range of *orders*.
 
 The range is absolute when the *order* part contain two numbers separated by a *comma* (```.```)
-    number before the comma describes the lower bound value of the range and number after the comma
-    describes the upper bound value.
+    The number before the comma describes the lower bound value of the range and number after the comma describes the upper bound value.
 
-The range is relative when it *order part contains a *plus* (```+```).
+The range is relative when the *order* part contains a *plus* (```+```).
  
-   - The number before is the absolute lower bound of the range
+   - The number before he ```+``` sign is the absolute lower bound of the range
        
    - The optional number after the ```+``` sign is the number of consecutive items after the lower bound to consider.
          When not present is value is set to 1 
          
- Exemples:
+ Exemple:
  ```
 12     # the item with order 12
 43,53  # the items with order from 43 to 53 included
 23+3   # the items with order from 23 to 26 included
-17+    #the items with order 17 and 18
+17+    # the items with order 17 and 18
 ```
 
 ## Tokens
-There are 2 types of tokens
-
 ### Tokens with **LOCATION** part
 They define the *location* part of the item for all following tokens until set by another.
 the token is build using a **LOCATION**, and an **ORDER**. separated by an underscore ```_```
 
   - token with *order* part
-    defines the *location* of the item and sets the **implicit location** to its location, and the **implicit mode*** to *add*
-example:
-```TK_28 HK_04,10 KAT_10+3```
+    defines the *location* of the item and sets the **implicit location** to its location
+Example:
+```
+TK_28 
+HK_04,10 
+KAT_10+3
+```
 
 ### Tokens with **ORDER** part
 They define the *order* part of the item for the **implicit location**.
@@ -114,21 +120,15 @@ An application will need to take care of this to resolve correctly LIL as LIL_00
 
 - Order format is specific to Invader , order numbers < 10 have a  leading "0", as in NOO_01
 
-- It is possible to encode any value in the comments but it is left to the application to interpret them.  It may be part of a future version of this specification to define a standard for values in comments, in the form of
-```
-# Date=xxxxx
-# player=anonymous
-```
-    
 
-#  usage
-
-FlashFiles are optimized for FlashInvaders but can be used for any Location Order application.
+# usage
+FlashFiles are optimized for FlashInvaders but can be used for any Location&Order application.
 
 The format is still very readable while beeing so concise.
-Any list in the form of complete location is a valid FlashFile
-
-It can be encoded in a QRCode as an URL and shared or sent in mails or messages.
+Any list in the form of complete location is a valid FlashFile, so that compatibility
+is total with *flat* format.
+Even for large lists of flashes, due to the lage compression factor, flashfiles
+be encoded in a QRCode and shared or sent in mails or messages as plain text,
 
 # implementation
 
@@ -138,8 +138,10 @@ A sample implementation is given in Javascript with a decoding tool.
 
 A sample file for flashed mosaics from the Invader universe is provided in flashfile (1244 bytes)
 and flat (16943 bytes)
-This describes 2348  mosaics in 46 cities and is the flaslist of one of the top 250 players
+This describes 2348  mosaics in 46 cities and is the flashlist of one of the top 250 players
 
+To chck for correctness on an OS with bash or compatible shell:
+```node testflashfile.js ../examples/xxx_flashfile.txt```
 
 
 

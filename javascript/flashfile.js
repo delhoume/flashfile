@@ -34,7 +34,6 @@ class FlashFileParser {
             if (command.indexOf("_") != -1) {
                 let parts = command.split("_");
                 this.current_city_code = parts[0];
-                console.log(parts);
                 this.handleOrderToken(parts[1].trim());
             } else {
                 this.handleOrderToken(command.trim());
@@ -58,16 +57,13 @@ class FlashFileParser {
             end = Number(bounds[1]);
             if (end >= start)
                 this.handleRelativeOrderRange(start, end - start + 1);
-            else
-                console.log("eerroro");
         } else if (order.indexOf("+") != -1) {
             let bounds = order.split("+");
             start = Number(bounds[0]);
-            let len = Number(bounds[1]);
+            let len = bounds[1].length == 0 ? 1 : Number(bounds[1]);
             this.handleRelativeOrderRange(start, len + 1)
         } else { /// single number
             let num = Number(order)
-            console.log(num);
             this.handleRelativeOrderRange(num, 1);
         }
     }
