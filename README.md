@@ -62,7 +62,7 @@ A value the describes a single *order* or a contiguous range of *orders*.
 43,53  # the items with order from 43 to 53 included
 23+3   # the items with order from 23 to 26 included
 17+    #the items with order 17 and 18
-
+```
 
 ## Tokens
 There are 2 types of tokens
