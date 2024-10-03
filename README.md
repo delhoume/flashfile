@@ -47,13 +47,15 @@ GRTI
 ## ORDER
 A value the describes a single *order* or a contiguous range of *orders*.
 
- The range is absolute when the *order* part contain two numbers separated by a *comma* .
+ The range is absolute when the *order* part contain two numbers separated by a *comma* (```.```)
     number before the comma describes the lower bound value of the range and number after the comma
-    desdcibes the upper bound value.
+    describes the upper bound value.
 
- The range is relative when it *order part contains a *plus* +.
+ The range is relative when it *order part contains a *plus* (```+```).
+ 
        - The number before is the absolute lower bound of the range
-       - The optional number after the + sign is the number of consecutive items after the lower bound to consider.
+       
+       - The optional number after the ```+``` sign is the number of consecutive items after the lower bound to consider.
          When not present is value is set to 1 
          
  Exemples:
