@@ -39,7 +39,10 @@ PA_1299 LA_18 # MARS_19 is not in the list
 ## LOCATION
 A text value, usually a single word or symbol that describes uniquely the *location* part
 
-Example: ```GRTI```
+Example: 
+```
+GRTI
+```
 
 ## ORDER
 A value the describes a single *order* or a contiguous range of *orders*.
@@ -50,14 +53,15 @@ A value the describes a single *order* or a contiguous range of *orders*.
 
    - The range is relative when it *order part contains a *plus* +.
        - The number before is the absolute lower bound of the range
-       - The optional number after the + sign is the number of consecutive items to consider.
-         When not present is value is set to 1
+       - The optional number after the + sign is the number of consecutive items after the lower bound to consider.
+         When not present is value is set to 1 
          
- Exemples: 
-```12```     the item with order 12
-```43,53``` the items with order from 43 to 53 included
-```23+3```  the items with order from 23 to 26 included
-```17+```  the items with order 17 and 18
+ Exemples:
+ ```
+12     # the item with order 12
+43,53  # the items with order from 43 to 53 included
+23+3   # the items with order from 23 to 26 included
+17+    #the items with order 17 and 18
 
 
 ## Tokens
@@ -97,22 +101,12 @@ ROM_03         # add ROM_03 to the list, sets ROM as the implicit location and A
 DIJ_01+5            # adds DIJ_01 DIJ_02 DIJ_03 DIJ_04 DIJ_05 DIJ_06
 ````
 
-
-### issue with implicit mode
-This mode allow for very short encoding of "all" items in a location but the concept of "all" 
-is a moving target, as the number of referenced items might increase.
-
-This means the token describes a situation at a moment in time and that the number of items in the location must be known at the time.
-If the number of items is likely to vary the use of **LOCATION** only tokens is discouraged.
-
-
 # application to FlashInvaders lists
 
 This format allows for very concise description of mosaics flashed in the world, 
 
 The compression ratio is vey high compared to a "flat" list of every item
 
-Paris is under constant *invasion* and the total number of referenced mosaics increases very often so the use of single PA token is not recommended at all.
 It happens that LIL (Lille) is the only invaded location in the world to have its order number start at 0 instead of 1.
 An application will need to take care of this to resolve correctly LIL as LIL_00,05
 
