@@ -113,12 +113,12 @@ DIJ_01+5            # adds DIJ_01 DIJ_02 DIJ_03 DIJ_04 DIJ_05 DIJ_06
 
 This format allows for very concise description of mosaics flashed in the world, 
 
-The compression ratio is vey high compared to a "flat" list of every item
+- The compression ratio is vey high compared to a "flat" list of every item
 
-It happens that LIL (Lille) is the only invaded location in the world to have its order number start at 0 instead of 1.
-An application will need to take care of this to resolve correctly LIL as LIL_00,05
+- It happens that LIL (Lille) is the only invaded location in the world to have its order number start at 0 instead of 1. 
 
-- Order format is specific to Invader , order numbers < 10 have a  leading "0", as in NOO_01
+- Order format is specific to Invader , order numbers < 10 have a  leading "0", as in NOO_01. leading 0(s) are optional nut it is recommended to use them in flashlists.
+Example xxx_flashfile_max.txt is no leading 0 and achieves a 1:11.3 compressionnn ratio against reference xxx_flashflat.txt.
 
 
 # usage
