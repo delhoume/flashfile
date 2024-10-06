@@ -29,7 +29,8 @@ class FlashFileParser {
 
     decode(tokens) {
         this.current_list = [];
-        for (let c = 0; c < tokens.length; ++c) {
+        this.current_city_code = 'PA';
+               for (let c = 0; c < tokens.length; ++c) {
             let command = tokens[c];
             if (command.indexOf("_") != -1) {
                 let parts = command.split("_");
