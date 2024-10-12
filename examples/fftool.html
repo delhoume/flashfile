@@ -122,8 +122,8 @@ RTD_01+9 12+7 21+2 25 SPACE_02 TLS_01+8 VLMO_01+2 VRS_01+ 04+15 21+ 34+3 40+2</t
 
 
         encodeString(contents, keep_order = false) {
-            let tokens = this.tokenize(contents, keep_order);
-            return this.encode(tokens);
+            let tokens = this.tokenize(contents);
+            return this.encode(tokens, keep_order);
         }
 
         encode(tokens, keep_order = false, use_invader_numbers = true) {
@@ -230,9 +230,8 @@ RTD_01+9 12+7 21+2 25 SPACE_02 TLS_01+8 VLMO_01+2 VRS_01+ 04+15 21+ 34+3 40+2</t
     }
 
     function encodeF() {
-        let keep_order_flag = keep_order.value;
         let flat = flatfile.value;
-        let encoded = flashfileParser.encodeString(flat, keep_order);
+        let encoded = flashfileParser.encodeString(flat, keep_order.checked);
         flashfile.value = encoded.join(" ");
         updateCounts();
     }

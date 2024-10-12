@@ -140,8 +140,11 @@ A sample file for flashed mosaics from the Invader universe is provided in flash
 and flat (16943 bytes)
 This describes 2348  mosaics in 46 cities and is the flashlist of one of the top 250 players
 
-To chck for correctness on an OS with bash or compatible shell:
+To check for correctness on an OS with bash or compatible shell:
 ```node testflashfile.js ../examples/xxx_flashfile.txt```
+
+A stand alone HTML dencode/decode tool is implemented in fftool.html with a live demo at 
+
 
 
 
