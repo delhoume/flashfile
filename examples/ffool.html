@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html>
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: 10fr 1fr 10fr;
+    }
+</style>
+
+<body>
+    <h2>FlashFile Tool</h2>
+    <div class="grid-container">
+        <div class="grid-child">
+            <div>
+                <textarea id="flashfile" rows="50" cols="100">AIX_01+9
+AMS_02+2 06,14 17,21 23+3 ANVR_02 AVI_02,28 30+7 39+1
+BBO_01+ 04 06+6 14+ 20+2 27+2 31+9 BRC_01,17 BRL_01+ 04+3 09+3
+BRN_01,12 14 17+ 21 24+ BSL_02,20 22+3 BXL_02+2 06 08 10+2 15+6 23+2 27+5 34 36+ 40+2
+CAPF_01+9 CAZ_01+3 06 08+8 19 23+2 30+4 36 40
+CHAR_01 CLR_01,11 13,47 CON_01+1 DIJ_01+5 FKF_01+ 05,14 FRQ_01+3
+FTBL_01,19 21,40 42+4 GNV_01,17 19 21+8 31+2 GRN_01+8 11,31 33+4 39,57
+KLN_01+6 09+ 12 14,23 LBR_01+7 LCT_01+8
+LDN_03+2 07+ 11+ 22 27 31+2 35 43 45+3 51 53 56 58 67+2 70 76 84 87+ 94 96 103+ 106 110+ 116 119+ 125+1
+129+2 133+ 138+ 143+ 150 LIL_00+3 05 LJU_01,28 30+6 38+4 LSN_02 04+ 08 10 12+4 18 LY_01+6 10,41 43+5
+MARS_01,17 19,66 68 71,97 MPL_01 3+7 12 14+ 18+ 23+6 32+2 36 38+ 41+1
+MTB_02+ 05+6 MUN_01,18 NA_01 03 NIM_01+4 PAU_01+7 10
+PA_02+3 07+ 10 13,25 28+4 34+3 39+5 46+5 53 55,133
+135 143+3 148+4 155+8 165,202 204+3 209+3 215+3 220+3
+225+8 235+ 238 240+3 245+10 257+4 263+3 268+7 277+3
+282+ 285+3 290+13 305 307+6 315+22 339+28 369+23
+394+12 410+29 441+15 458+10 470+8 480+10 492+7 501+7 510
+514+3 520+17 539+6 547+7 556+4 562+59 623+29 654+21
+677 679+7 689+19 710+5 717+3 722+20 744 747+3 752+10
+764+8 774+2 778+20 800+5 809+16 827 829+47 878+5 885+12
+900+3 905+30 937+ 940+30 972+9 983+16 1001+27 1030+4
+1036+42 1080+8 1090+50 1142+19 1163+24 1189+25 1216+31 1249+17
+1268+7 1277+15 1294+39 1335+28 1366+23 1391+11 1404+116
+PRP_01+7 RA_01+8 11 13 15 17+7 27+ 31+6 39+1
+RDU_03 RN_01+3 ROM_03+ 06 09+2 13 15 19 21+2 25+ 28+6 37+7 46+1 49+ 53 55+3 60+7 69+2 74
+RTD_01+9 12+7 21+2 25 SPACE_02 TLS_01+8 VLMO_01+2 VRS_01+ 04+15 21+ 34+3 40+2</textarea>
+                <div id="ccount">Bytes:</div>
+            </div>
+        </div>
+        <div class="grid-child">
+
+            <button onclick="decodeF()" id="decode">decode -=&gt;</button>
+            <button onclick="encodeF()" id="encode">&lt;=-encode</button>
+            <form>
+                <input type="checkbox" id="keep_order" value="false" />
+                <label for="keep_order">keep order when encoding</label>
+            </form>
+        </div>
+        <div class="grid-child">
+            <textarea id="flatfile" rows="50" cols="100"></textarea>
+            <div id="dcount">Bytes:</div>
+                </div>
+    </div>
+</body>
+<script type="text/javascript">
+
+    class FlashFileParser {
+        current_city_code;
+        constructor() { }
+
+        tokenize(contents) {
+            let tokens = [];
+            if (contents && contents.length > 0) {
+                let lines = contents.split("\n");
+                for (let l = 0; l < lines.length; ++l) {
+                    let line = lines[l];
+                    let comment_pos = line.indexOf('#');
+                    if (comment_pos != -1)
+                        line = line.substring(0, comment_pos);
+                    let words = line.split(" ");
+                    for (let w = 0; w < words.length; ++w) {
+                        let good_word = words[w].trim();
+                        if (good_word.length > 0) {
+                            tokens.push(good_word);
+                        }
+                    }
+                }
+            }
+            return tokens;
+        }
+
+        decodeString(contents) {
+            let tokens = this.tokenize(contents);
+            return this.decode(tokens);
+        }
+
+        decode(tokens) {
+            let current_list = [];
+            this.current_city_code = 'PA';
+            for (let c = 0; c < tokens.length; ++c) {
+                let command = tokens[c];
+                if (command.indexOf("_") != -1) {
+                    let parts = command.split("_");
+                    this.current_city_code = parts[0];
+                    this.handleOrderToken(parts[1].trim(), current_list);
+                } else {
+                    this.handleOrderToken(command.trim(), current_list);
+                }
+            }
+            return current_list;
+
+        }
+
+        emitOrderToken(current_span, use_invader_numbers) {
+            if (current_span.len == 0) return this.printInvaderNumber(current_span.start, use_invader_numbers);
+            else if (current_span.len == 1) return "" + this.printInvaderNumber(current_span.start, use_invader_numbers) + "+";
+            else {
+                let absolute = this.printInvaderNumber(current_span.start, use_invader_numbers) + "," + this.printInvaderNumber(current_span.start + current_span.len, use_invader_numbers);
+                let relative = this.printInvaderNumber(current_span.start, use_invader_numbers) + "+" + current_span.len;
+                return relative.length > absolute.length ? absolute : relative;
+            }
+        }
+
+        emitFullToken(current_span, needs_city = true, use_invader_numbers = true) {
+            return (needs_city ? (current_span.city + "_") : "") + this.emitOrderToken(current_span, use_invader_numbers);
+        }
+
+
+        encodeString(contents, keep_order = false) {
+            let tokens = this.tokenize(contents, keep_order);
+            return this.encode(tokens);
+        }
+
+        encode(tokens, keep_order = false, use_invader_numbers = true) {
+            let encoded = [];
+            if (tokens.length == 0)
+                return encoded;
+            // split all to allow sorting and fill input structure by city
+            let sis = tokens.map((t) => {
+                let parts = t.split("_");
+                if (parts.length == 2) {
+                    let city = parts[0];
+                    let order = parts[1];
+                    return { city: city, order: Number(order) };
+                }
+            });
+            // if sorting is allowed
+            if (keep_order == false) {
+                //            console.log("sorting");
+                sis.sort((ta, tb) => {
+                    if (ta.city == tb.city)
+                        return ta.order - tb.order;
+                    else
+                        return ta.city.localeCompare(tb.city);
+                });
+            } else {
+                //    console.log("no sorting");
+            }
+            let current_span = { city: sis[0].city, start: sis[0].order, len: 0 };
+            let previous_full_city = "None";
+            for (let s = 1; s < sis.length; ++s) {
+                let si = sis[s];
+                //           console.log("considering", si, current_span.city, current_span.start, current_span.len);
+                if ((si.city == current_span.city) && si.order == (current_span.start + current_span.len + 1)) {
+                    current_span.len += 1;
+                } else if ((si.city != current_span.city) || si.order != (current_span.start + current_span.len + 1)) {
+                    //                   console.log("different city or same city but not neighbours")
+                    let token = this.emitFullToken(current_span, previous_full_city != current_span.city, use_invader_numbers);
+                    encoded.push(token);
+                    previous_full_city = current_span.city;
+                    current_span.city = si.city;
+                    current_span.start = si.order;
+                    current_span.len = 0;
+                }
+            }
+            //      console.log("flush");
+            encoded.push(this.emitFullToken(current_span, previous_full_city != current_span.city, use_invader_numbers));
+            //      console.log(encoded);
+            return encoded;
+        }
+
+        // use_invader_numbers allows to squeeze one char for orders < 10
+        printInvaderNumber(num, use_invader_numbers = true) {
+            if (num < 10 && use_invader_numbers == true)
+                return "0" + num;
+            else
+                return num;
+        }
+
+        handleOrderToken(order, current_list) {
+            if (order.length == 0) return;
+            let start, end;
+            if (order.indexOf(",") != -1) { // we have an absolut range
+                let bounds = order.split(",");
+                start = Number(bounds[0]);
+                end = Number(bounds[1]);
+                if (end >= start)
+                    this.handleRelativeOrderRange(start, end - start + 1, current_list);
+            } else if (order.indexOf("+") != -1) {
+                let bounds = order.split("+");
+                start = Number(bounds[0]);
+                let len = bounds[1].length == 0 ? 1 : Number(bounds[1]);
+                this.handleRelativeOrderRange(start, len + 1, current_list)
+            } else { /// single number
+                let num = Number(order)
+                this.handleRelativeOrderRange(num, 1, current_list);
+            }
+        }
+        handleRelativeOrderRange(r1, len, current_list) {
+            for (let l = 0; l < len; ++l) {
+                let full_code = this.current_city_code + "_" + this.printInvaderNumber(r1 + l);
+                if (!current_list.includes(full_code)) current_list.push(full_code);
+            }
+        }
+    }
+
+
+    let flashfileParser = new FlashFileParser();
+    let flashfile = document.getElementById("flashfile");
+    let flatfile = document.getElementById("flatfile");
+    let keep_order = document.getElementById("keep_order")
+    let ccount = document.getElementById("ccount");
+    let dcount = document.getElementById("dcount")
+
+    function updateCounts() {
+        ccount.innerHTML = "Bytes: " + flashfile.value.length; 
+        dcount.innerHTML = "Bytes: " + flatfile.value.length;
+
+    }
+    function decodeF() {
+        let encoded = flashfile.value;
+        let decoded = flashfileParser.decodeString(encoded);
+        flatfile.value = decoded.join(" ");
+        updateCounts();
+    }
+
+    function encodeF() {
+        let keep_order_flag = keep_order.value;
+        let flat = flatfile.value;
+        let encoded = flashfileParser.encodeString(flat, keep_order);
+        flashfile.value = encoded.join(" ");
+        updateCounts();
+    }
+    updateCounts();
+</script>
+
+
+
+</html>
