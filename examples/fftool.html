@@ -54,9 +54,11 @@ RTD_01+9 12+7 21+2 25 SPACE_02 TLS_01+8 VLMO_01+2 VRS_01+ 04+15 21+ 34+3 40+2</t
         <div class="grid-child">
             <textarea id="flatfile" rows="50" cols="100"></textarea>
             <div id="dcount">Bytes:</div>
-                </div>
+        </div>
     </div>
+    <div id="qrcode"></div>
 </body>
+<script src="qrcode.min.js"></script>
 <script type="text/javascript">
 
     class FlashFileParser {
@@ -216,11 +218,20 @@ RTD_01+9 12+7 21+2 25 SPACE_02 TLS_01+8 VLMO_01+2 VRS_01+ 04+15 21+ 34+3 40+2</t
     let keep_order = document.getElementById("keep_order")
     let ccount = document.getElementById("ccount");
     let dcount = document.getElementById("dcount")
+    let qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: "http://jindo.dev.naver.com/collie",
+        width: 512,
+        height: 512,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+    });
 
     function updateCounts() {
-        ccount.innerHTML = "Bytes: " + flashfile.value.length; 
+        ccount.innerHTML = "Bytes: " + flashfile.value.length;
         dcount.innerHTML = "Bytes: " + flatfile.value.length;
-
+        qrcode.clear(); // clear the code.
+        qrcode.makeCode(flashfile.value);
     }
     function decodeF() {
         let encoded = flashfile.value;
@@ -237,7 +248,4 @@ RTD_01+9 12+7 21+2 25 SPACE_02 TLS_01+8 VLMO_01+2 VRS_01+ 04+15 21+ 34+3 40+2</t
     }
     updateCounts();
 </script>
-
-
-
 </html>
