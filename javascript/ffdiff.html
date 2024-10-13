@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+
+<html>
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: 10fr 1fr 10fr;
+    }
+
+    .results-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+</style>
+
+<body>
+    <h2>FlashFile Differences Tool</h2>
+    <div class="grid-container">
+        <div class="grid-child">
+            <div>
+                <div>Player1:</div>
+                <textarea id="flashfile1" rows="30" cols="100">
+BBO_01+ 04 06+2 14+ 20+2
+FTBL_01+3 21,24 42+4 
+SPACE_02 VLMO_01+2 VRS_01+ 04+3 21+ 34+3 40+2</textarea>
+            </div>
+        </div>
+        <div class="grid-child">
+
+            <button onclick="diffF()" id="diffF">show differences</button>
+        </div>
+        <div class="grid-child">
+            <div>Player2:</div>
+            <textarea id="flashfile2" rows="30" cols="100">VRS_15+ AVI_02,3 30+2 39+2 BBO_07+5 MARS_50+3</textarea>
+        </div>
+    </div>
+    <div class="results-container">
+        <div class="grid-child">
+            <div>
+                <div>Common:</div>
+                <textarea id="common" rows="20" cols="30"></textarea>
+            </div>
+        </div>
+        <div class="grid-child">
+            <div>
+                <div>Player1 exclusive:</div>
+                <textarea id="player1exclusive" rows="20" cols="30"></textarea>
+            </div>
+        </div>
+        <div class="grid-child">
+            <div>Player2 exclusive:</div>
+            <div>
+                <textarea id="player2exclusive" rows="20" cols="30"></textarea>
+            </div>
+        </div>
+    </div>
+
+    </div>
+</body>
+
+</html>
+<script src="qrcode.min.js"></script>
+<script src="flashfile.js"></script>>
+<script lang="javacript">
+    let flashfileParser = new FlashFileParser();
+    let flashfile1 = document.getElementById("flashfile1");
+    let flashfile2 = document.getElementById("flashfile2");
+    let common = document.getElementById("common")
+    let player1exclusive = document.getElementById("player1exclusive");
+    let player2exclusive = document.getElementById("player2exclusive");
+    /*
+    let qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: "http://jindo.dev.naver.com/collie",
+        width: 512,
+        height: 512,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+    });
+    */
+
+
+    function updateResults(commonc, player1_exclusivec, player2_exclusivec) {
+        common.value = flashfileParser.encode(commonc).join(" ");
+        player1exclusive.value = flashfileParser.encode(player1_exclusivec).join(" ");
+        player2exclusive.value = flashfileParser.encode(player2_exclusivec).join(" ");
+        //     common.value = commonc.join(" ");
+        //     player1exclusive.value =player1_exclusivec.join(" ");
+        //     player2exclusive.value = player2_exclusivec.join(" ");
+         }
+
+        function diffF() {
+            let decoded1 = flashfileParser.decodeString(flashfile1.value);
+            let decoded2 = flashfileParser.decodeString(flashfile2.value);
+            console.log(decoded1, decoded2);
+            let commonl = [];
+            let player1_exclusivel = [];
+            let player2_exclusivel = [];
+            let unflashed = [];
+
+            //go though player1
+            for (let f = 0; f < decoded1.length; ++f) {
+                let si = decoded1[f];
+                if (decoded2.indexOf(si) != -1) {
+                    commonl.push(si);
+                } else {
+                    player1_exclusivel.push(si);
+                }
+            }
+            for (let f = 0; f < decoded2.length; ++f) {
+                if (!decoded1.includes(decoded2[f])) {
+                    player2_exclusivel.push(decoded2[f]);
+                }
+            }
+
+            updateResults(commonl, player1_exclusivel, player2_exclusivel);
+        }
+</script>
+
+</html>

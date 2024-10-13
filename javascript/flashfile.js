@@ -1,46 +1,47 @@
 class FlashFileParser {
     current_city_code;
-    current_list;
     constructor() { }
 
     tokenize(contents) {
         let tokens = [];
-        let lines = contents.split("\n");
-        for (let l = 0; l < lines.length; ++l) {
-            let line = lines[l];
-            let comment_pos = line.indexOf('#');
-            if (comment_pos != -1)
-                line = line.substring(0, comment_pos);
-            let words = line.split(" ");
-            for (let w = 0; w < words.length; ++w) {
-                let good_word = words[w].trim();
-                if (good_word.length > 0) {
-                    tokens.push(good_word);
+        if (contents && contents.length > 0) {
+            let lines = contents.split("\n");
+            for (let l = 0; l < lines.length; ++l) {
+                let line = lines[l];
+                let comment_pos = line.indexOf('#');
+                if (comment_pos != -1)
+                    line = line.substring(0, comment_pos);
+                let words = line.split(" ");
+                for (let w = 0; w < words.length; ++w) {
+                    let good_word = words[w].trim();
+                    if (good_word.length > 0) {
+                        tokens.push(good_word);
+                    }
                 }
             }
         }
         return tokens;
     }
 
-    items(contents) {
+    decodeString(contents) {
         let tokens = this.tokenize(contents);
         return this.decode(tokens);
     }
 
     decode(tokens) {
-        this.current_list = [];
+        let current_list = [];
         this.current_city_code = 'PA';
         for (let c = 0; c < tokens.length; ++c) {
             let command = tokens[c];
             if (command.indexOf("_") != -1) {
                 let parts = command.split("_");
                 this.current_city_code = parts[0];
-                this.handleOrderToken(parts[1].trim());
+                this.handleOrderToken(parts[1].trim(), current_list);
             } else {
-                this.handleOrderToken(command.trim());
+                this.handleOrderToken(command.trim(), current_list);
             }
         }
-        return this.current_list;
+        return current_list;
 
     }
 
@@ -59,9 +60,15 @@ class FlashFileParser {
     }
 
 
-    encode(tokens, keep_order = false, use_invader_numbers) {
-        let encoded = [];
+    encodeString(contents, keep_order = false) {
+        let tokens = this.tokenize(contents);
+        return this.encode(tokens, keep_order);
+    }
 
+    encode(tokens, keep_order = false, use_invader_numbers = true) {
+        let encoded = [];
+        if (tokens.length == 0)
+            return encoded;
         // split all to allow sorting and fill input structure by city
         let sis = tokens.map((t) => {
             let parts = t.split("_");
@@ -73,7 +80,7 @@ class FlashFileParser {
         });
         // if sorting is allowed
         if (keep_order == false) {
-//            console.log("sorting");
+            //            console.log("sorting");
             sis.sort((ta, tb) => {
                 if (ta.city == tb.city)
                     return ta.order - tb.order;
@@ -114,7 +121,7 @@ class FlashFileParser {
             return num;
     }
 
-    handleOrderToken(order) {
+    handleOrderToken(order, current_list) {
         if (order.length == 0) return;
         let start, end;
         if (order.indexOf(",") != -1) { // we have an absolut range
@@ -122,24 +129,23 @@ class FlashFileParser {
             start = Number(bounds[0]);
             end = Number(bounds[1]);
             if (end >= start)
-                this.handleRelativeOrderRange(start, end - start + 1);
+                this.handleRelativeOrderRange(start, end - start + 1, current_list);
         } else if (order.indexOf("+") != -1) {
             let bounds = order.split("+");
             start = Number(bounds[0]);
             let len = bounds[1].length == 0 ? 1 : Number(bounds[1]);
-            this.handleRelativeOrderRange(start, len + 1)
+            this.handleRelativeOrderRange(start, len + 1, current_list)
         } else { /// single number
             let num = Number(order)
-            this.handleRelativeOrderRange(num, 1);
+            this.handleRelativeOrderRange(num, 1, current_list);
         }
     }
-    handleRelativeOrderRange(r1, len) {
+    handleRelativeOrderRange(r1, len, current_list) {
         for (let l = 0; l < len; ++l) {
             let full_code = this.current_city_code + "_" + this.printInvaderNumber(r1 + l);
-            if (!this.current_list.includes(full_code)) this.current_list.push(full_code);
+            if (!current_list.includes(full_code)) current_list.push(full_code);
         }
     }
 }
 
-
-export { FlashFileParser }
+//export { FlashFileParser  };
